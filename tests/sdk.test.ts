@@ -12,7 +12,7 @@ describe("ThramClient", () => {
   expect(fetchMock).not.toHaveBeenCalled();
  });
  it("sends authenticated creation and idempotency header", async () => {
-  const fetchMock = vi.fn(async () => new Response(JSON.stringify({id:"pay_123", status:"requires_approval"}), {status:201,headers:{"Content-Type":"application/json"}}));
+  const fetchMock = vi.fn(async (_url: string, _init?: RequestInit) => new Response(JSON.stringify({id:"pay_123", status:"requires_approval"}), {status:201,headers:{"Content-Type":"application/json"}}));
   const client = new ThramClient({baseUrl:"http://localhost:8787",apiKey:"sandbox_key",fetch:fetchMock as unknown as typeof fetch});
   const result = await client.payments.create({agentId:"agent_1", recipient:"merchant_1", amount:100, currency:"USD"},{idempotencyKey:"req_1"});
   expect(result.status).toBe("requires_approval");
